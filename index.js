@@ -14,7 +14,7 @@ app.use(cookieParser());
 // ✅ Port and Mongo URI
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGODB_URL;
-const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL
+
 // ✅ CORS config
 // const allowedOrigins = ["http://localhost:3000"];
 // const corsOptions = {
@@ -28,11 +28,22 @@ const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL
 //   },
 // };
 
+const allowedOrigins = [
+  "http://localhost:3000",                    // for local dev
+   process.env.FRONTEND_URL      // production domain
+];
+
 const corsOptions = {
-  origin:FRONTEND_URL,   // your frontend URL
-  credentials: true,                 // allow credentials (cookies, authorization headers, etc.)
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
 app.use(cors(corsOptions));
