@@ -29,13 +29,15 @@ const MONGO_URL = process.env.MONGODB_URL;
 // };
 
 const allowedOrigins = [
-  "http://localhost:3000",                    // for local dev
-   process.env.FRONTEND_URL      // production domain
+  "http://localhost:3000", // local dev
+  process.env.FRONTEND_URL // production domain
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-     console.log("🌍 Incoming request origin:", origin);
+    console.log("🌍 Incoming request origin:", origin);
+    console.log("✅ FRONTEND_URL:", process.env.FRONTEND_URL);
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -48,14 +50,12 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"]
 };
 
+// ✅ Apply only once
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-
-
-// ✅ Middleware
-// app.use(cors(corsOptions));
 app.use(express.json());
+
 
 // ✅ Serve uploaded images statically
 app.use("/images", express.static(path.join(__dirname, "public/images")));
